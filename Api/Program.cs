@@ -9,6 +9,7 @@ builder.Services.AddSwaggerGen();
 
 // настройка взаимодействия с DbContext (метод расширения)
 builder.Services.AddPostgreSqlDbContext(builder.Configuration);
+builder.Services.AddPostgreSqlIdentityContext();
 
 var app = builder.Build();
 app.MapControllers();

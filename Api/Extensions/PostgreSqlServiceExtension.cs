@@ -1,4 +1,5 @@
 using Api.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Extension
@@ -14,6 +15,14 @@ namespace Api.Extension
              {
                  options.UseNpgsql(configuration.GetConnectionString("PostgreSQLConnection"));
              });
+        }
+
+        // преднастройка для работы с пользователями
+        public static void AddPostgreSqlIdentityContext(this IServiceCollection services)
+        {
+            // тип пользователей, тип ролей
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>();
         }
     }
 }
