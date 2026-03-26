@@ -1,3 +1,4 @@
+using Api.Model;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,5 +10,8 @@ namespace Api.Data
         {
 
         }
+
+        // описание таблицы
+        public DbSet<AppUser> AppUsers { get; set; }
     }
 }

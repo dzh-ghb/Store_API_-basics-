@@ -1,4 +1,5 @@
 using Api.Data;
+using Api.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +22,7 @@ namespace Api.Extension
         public static void AddPostgreSqlIdentityContext(this IServiceCollection services)
         {
             // тип пользователей, тип ролей
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>();
         }
     }
