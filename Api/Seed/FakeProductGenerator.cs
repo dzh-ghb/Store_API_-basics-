@@ -15,8 +15,8 @@ namespace Api.Seed
                 .RuleFor(m => m.Id, f => f.IndexFaker + 1)
                 .RuleFor(m => m.Name, f => f.Commerce.ProductName())
                 .RuleFor(m => m.Description, f => f.Lorem.Sentence())
-                .RuleFor(m => m.Category, f => f.PickRandom(categories))
                 .RuleFor(m => m.SpecialTag, f => f.PickRandom(specialTags))
+                .RuleFor(m => m.Category, f => f.PickRandom(categories))
                 .RuleFor(m => m.Price, f => Math.Round(f.Random.Double(1, 100_000), 2))
                 .RuleFor(m => m.Image, f => $"https://placehold.co/100")
                 .Generate(count);

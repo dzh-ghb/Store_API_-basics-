@@ -1,13 +1,20 @@
+using Api.Data;
+using Api.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
     public class ProductController : StoreController
     {
-        [HttpGet]
-        public async Task<ActionResult<string>> Get()
+        public ProductController(IStorage storage) : base(storage)
         {
-            return Ok(await Task.FromResult<string>("_DZHITS"));
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<string>> GetAll()
+        {
+            // return Ok(await Task.FromResult<string>("_DZHITS"));
+            return Ok(await Task.FromResult(storage.GetAllProducts()));
         }
     }
 }
