@@ -14,4 +14,9 @@ public class PostgreSqlEfStorage : IStorage
     {
         return dbContext.Products.ToList(); // БД.таблица.преобразовать_в_список()
     }
+
+    public Product GetProduct(int id)
+    {
+        return dbContext.Products.FirstOrDefault(x => x.Id == id);
+    }
 }
