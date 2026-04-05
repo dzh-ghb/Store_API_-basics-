@@ -3,6 +3,7 @@ using Api.Data;
 using Api.Model;
 using Api.ModelDto;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Controllers
 {
@@ -27,8 +28,8 @@ namespace Api.Controllers
                     {
                         return BadRequest(new ServerResponse
                         {
-                            StatusCode = HttpStatusCode.BadRequest,
                             IsSuccess = false,
+                            StatusCode = HttpStatusCode.BadRequest,
                             ErrorMessages = { "Наличие изображения (Image) обязательно" }
                         });
                     }
@@ -38,15 +39,15 @@ namespace Api.Controllers
                         productCreateDto.Image = $"https://placehold.co/100";
                         // Image = productCreateDto.Image // более корректный вариант для финальной версии
 
-                        Product item = await Task.FromResult(storage.AddProduct(productCreateDto));
+                        Product productFromDb = await Task.FromResult(storage.AddProduct(productCreateDto));
 
                         ServerResponse response = new()
                         {
                             StatusCode = HttpStatusCode.Created,
-                            Result = item
+                            Result = productFromDb
                         };
                         // возврат добавленного значения (по сути - выполнение метода GetById(id))
-                        return CreatedAtRoute(nameof(GetById), new { id = item.Id }, response);
+                        return CreatedAtRoute(nameof(GetById), new { id = productFromDb.Id }, response);
                     }
                 }
                 else // невалидная модель
@@ -55,7 +56,7 @@ namespace Api.Controllers
                     {
                         IsSuccess = false,
                         StatusCode = HttpStatusCode.BadRequest,
-                        ErrorMessages = { "Некорректная модель данных" }
+                        ErrorMessages = { "Невалидная модель данных" }
                     });
                 }
             }
@@ -89,8 +90,8 @@ namespace Api.Controllers
             {
                 return BadRequest(new ServerResponse
                 {
-                    StatusCode = HttpStatusCode.BadRequest,
                     IsSuccess = false,
+                    StatusCode = HttpStatusCode.BadRequest,
                     ErrorMessages = { "Указан некорректный ID" }
                 });
             }
@@ -101,8 +102,8 @@ namespace Api.Controllers
             {
                 return NotFound(new ServerResponse
                 {
-                    StatusCode = HttpStatusCode.NotFound,
                     IsSuccess = false,
+                    StatusCode = HttpStatusCode.NotFound,
                     ErrorMessages = { "Продукт по указанному ID не найден" }
                 });
             }
@@ -111,6 +112,66 @@ namespace Api.Controllers
                 StatusCode = HttpStatusCode.OK,
                 Result = result
             });
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ServerResponse>> Update(
+            int id, [FromBody] ProductUpdateDto productUpdateDto
+        )
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    if (productUpdateDto == null || productUpdateDto.Id != id)
+                    {
+                        return BadRequest(new ServerResponse
+                        {
+                            IsSuccess = false,
+                            StatusCode = HttpStatusCode.BadRequest,
+                            ErrorMessages = { "Несоответствие модели данных" }
+                        });
+                    }
+                    else
+                    {
+                        Product productFromDb = await Task.FromResult(storage.GetProduct(id));
+
+                        if (productFromDb == null)
+                        {
+                            return NotFound(new ServerResponse
+                            {
+                                IsSuccess = false,
+                                StatusCode = HttpStatusCode.NotFound,
+                                ErrorMessages = { "Продукт по указанному ID не найден" }
+                            });
+                        }
+
+                        return Ok(new ServerResponse
+                        {
+                            StatusCode = HttpStatusCode.OK,
+                            Result = await Task.FromResult(storage.UpdateProduct(id, productUpdateDto))
+                        });
+                    }
+                }
+                else
+                {
+                    return BadRequest(new ServerResponse
+                    {
+                        IsSuccess = false,
+                        StatusCode = HttpStatusCode.BadRequest,
+                        ErrorMessages = { "Невалидная модель данных" }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ServerResponse
+                {
+                    IsSuccess = false,
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ErrorMessages = { "Возникла ошибка/исключение", ex.Message }
+                });
+            }
         }
     }
 }

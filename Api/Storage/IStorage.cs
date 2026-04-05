@@ -8,4 +8,6 @@ public interface IStorage
     List<Product> GetAllProducts();
 
     Product GetProduct(int id);
+
+    Product UpdateProduct(int id, ProductUpdateDto productUpdateDto);
 }

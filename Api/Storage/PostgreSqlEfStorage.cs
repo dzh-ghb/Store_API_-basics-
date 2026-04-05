@@ -39,4 +39,31 @@ public class PostgreSqlEfStorage : IStorage
     {
         return dbContext.Products.FirstOrDefault(x => x.Id == id);
     }
+
+    public Product UpdateProduct(int id, ProductUpdateDto productUpdateDto)
+    {
+        Product item = GetProduct(id);
+
+        item.Name = productUpdateDto.Name; // поле обязательное, проверка не нужна
+        item.Description = productUpdateDto.Description;
+        if (!String.IsNullOrEmpty(productUpdateDto.SpecialTag))
+        {
+            item.SpecialTag = productUpdateDto.SpecialTag;
+        }
+        if (!String.IsNullOrEmpty(productUpdateDto.Category))
+        {
+            item.Category = productUpdateDto.Category;
+        }
+        item.Price = productUpdateDto.Price;
+
+        if (productUpdateDto.Image != null
+            && productUpdateDto.Image.Length > 0)
+        {
+            item.Image = $"https://placehold.co/200";
+        }
+        dbContext.Products.Update(item);
+        dbContext.SaveChanges();
+
+        return item;
+    }
 }
