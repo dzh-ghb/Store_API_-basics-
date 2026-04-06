@@ -171,5 +171,48 @@ namespace Api.Controllers
                 });
             }
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ServerResponse>> RemoveById(int id)
+        {
+            try
+            {
+                if (id <= 0)
+                {
+                    return BadRequest(new ServerResponse
+                    {
+                        IsSuccess = false,
+                        StatusCode = HttpStatusCode.BadRequest,
+                        ErrorMessages = { "Указан некорректный ID" }
+                    });
+                }
+
+                bool isProductRemoved = await Task.FromResult(storage.RemoveProduct(id));
+
+                if (isProductRemoved == false)
+                {
+                    return NotFound(new ServerResponse
+                    {
+                        IsSuccess = false,
+                        StatusCode = HttpStatusCode.NotFound,
+                        ErrorMessages = { "Продукт по указанному ID не найден" }
+                    });
+                }
+
+                return Ok(new ServerResponse
+                {
+                    StatusCode = HttpStatusCode.NoContent
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ServerResponse
+                {
+                    IsSuccess = false,
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ErrorMessages = { "Возникла ошибка/исключение", ex.Message }
+                });
+            }
+        }
     }
 }

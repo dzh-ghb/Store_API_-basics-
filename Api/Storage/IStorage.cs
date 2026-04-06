@@ -10,4 +10,6 @@ public interface IStorage
     Product GetProduct(int id);
 
     Product UpdateProduct(int id, ProductUpdateDto productUpdateDto);
+
+    bool RemoveProduct(int id);
 }

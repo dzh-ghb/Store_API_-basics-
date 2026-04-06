@@ -71,4 +71,19 @@ public class PostgreSqlEfStorage : IStorage
 
         return item;
     }
+
+    public bool RemoveProduct(int id)
+    {
+        Product item = GetProduct(id);
+
+        if (item == null)
+        {
+            return false;
+        }
+
+        dbContext.Products.Remove(item);
+        dbContext.SaveChanges();
+
+        return true;
+    }
 }
