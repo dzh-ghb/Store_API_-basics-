@@ -1,9 +1,7 @@
 using System.Net;
-using Api.Data;
 using Api.Model;
 using Api.ModelDto;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Api.Controllers
 {
@@ -39,15 +37,15 @@ namespace Api.Controllers
                         productCreateDto.Image = $"https://placehold.co/100";
                         // Image = productCreateDto.Image // более корректный вариант для финальной версии
 
-                        Product productFromDb = await Task.FromResult(storage.AddProduct(productCreateDto));
+                        Product addedProduct = await Task.FromResult(storage.AddProduct(productCreateDto));
 
                         ServerResponse response = new()
                         {
                             StatusCode = HttpStatusCode.Created,
-                            Result = productFromDb
+                            Result = addedProduct
                         };
                         // возврат добавленного значения (по сути - выполнение метода GetById(id))
-                        return CreatedAtRoute(nameof(GetById), new { id = productFromDb.Id }, response);
+                        return CreatedAtRoute(nameof(GetById), new { id = addedProduct.Id }, response);
                     }
                 }
                 else // невалидная модель
@@ -74,13 +72,13 @@ namespace Api.Controllers
         [HttpGet]
         public async Task<ActionResult<ServerResponse>> GetAll()
         {
-            ServerResponse response = new ServerResponse
+            ServerResponse receivedProducts = new ServerResponse
             {
                 StatusCode = HttpStatusCode.OK,
                 Result = await Task.FromResult(storage.GetAllProducts())
             };
 
-            return Ok(response);
+            return Ok(receivedProducts);
         }
 
         [HttpGet("{id}", Name = nameof(GetById))]
@@ -96,9 +94,9 @@ namespace Api.Controllers
                 });
             }
 
-            Product result = await Task.FromResult(storage.GetProduct(id));
+            Product receivedProduct = await Task.FromResult(storage.GetProduct(id));
 
-            if (result == null)
+            if (receivedProduct == null)
             {
                 return NotFound(new ServerResponse
                 {
@@ -110,7 +108,7 @@ namespace Api.Controllers
             return Ok(new ServerResponse
             {
                 StatusCode = HttpStatusCode.OK,
-                Result = result
+                Result = receivedProduct
             });
         }
 
@@ -134,9 +132,9 @@ namespace Api.Controllers
                     }
                     else
                     {
-                        Product productFromDb = await Task.FromResult(storage.GetProduct(id));
+                        Product updatedProduct = await Task.FromResult(storage.UpdateProduct(id, productUpdateDto));
 
-                        if (productFromDb == null)
+                        if (updatedProduct == null)
                         {
                             return NotFound(new ServerResponse
                             {
@@ -149,7 +147,7 @@ namespace Api.Controllers
                         return Ok(new ServerResponse
                         {
                             StatusCode = HttpStatusCode.OK,
-                            Result = await Task.FromResult(storage.UpdateProduct(id, productUpdateDto))
+                            Result = updatedProduct
                         });
                     }
                 }

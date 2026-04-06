@@ -25,7 +25,7 @@ public class PostgreSqlEfStorage : IStorage
 
         // добавление в БД
         dbContext.Products.Add(item);
-        dbContext.SaveChanges();
+        dbContext.SaveChanges(); // id из БД будет добавлен в item после обработки операции Entity Framework
 
         return item;
     }
@@ -44,6 +44,11 @@ public class PostgreSqlEfStorage : IStorage
     {
         Product item = GetProduct(id);
 
+        if (item == null)
+        {
+            return null;
+        }
+
         item.Name = productUpdateDto.Name; // поле обязательное, проверка не нужна
         item.Description = productUpdateDto.Description;
         if (!String.IsNullOrEmpty(productUpdateDto.SpecialTag))
@@ -55,12 +60,12 @@ public class PostgreSqlEfStorage : IStorage
             item.Category = productUpdateDto.Category;
         }
         item.Price = productUpdateDto.Price;
-
         if (productUpdateDto.Image != null
             && productUpdateDto.Image.Length > 0)
         {
             item.Image = $"https://placehold.co/200";
         }
+
         dbContext.Products.Update(item);
         dbContext.SaveChanges();
 
