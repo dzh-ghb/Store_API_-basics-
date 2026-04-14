@@ -11,6 +11,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddPostgreSqlDbContext(builder.Configuration);
 builder.Services.AddPostgreSqlIdentityContext();
 
+builder.Services.AddScoped<IStorage, PostgreSqlEfStorage>();
+
 var app = builder.Build();
 app.MapControllers();
 
@@ -20,9 +22,5 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
-// app.MapGet("/dzhits", () => "_DZHITS_NDBT");
-// .WithOpenApi();
 
 app.Run();

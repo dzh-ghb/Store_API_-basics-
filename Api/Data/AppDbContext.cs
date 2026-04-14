@@ -1,4 +1,5 @@
 using Api.Model;
+using Api.Seed;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +12,15 @@ namespace Api.Data
 
         }
 
-        // описание таблицы
+        // описание таблицы, обозначающей EF тип основного юзера в БД (механизм TPH - Table Per Hierarchy)
         public DbSet<AppUser> AppUsers { get; set; }
+
+        public DbSet<Product> Products { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Entity<Product>().HasData(FakeProductGenerator.GenerateProductList());
+        }
     }
 }
