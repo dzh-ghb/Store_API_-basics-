@@ -1,6 +1,5 @@
 using Api.Common;
 using Microsoft.AspNetCore.Identity;
-using Npgsql.Replication;
 
 // расширение для наполнения таблицы с ролями
 namespace Api.Extension
