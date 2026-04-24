@@ -1,5 +1,6 @@
 namespace Api.ModelDto
 {
+    // DTO-модель регистрации юзеров
     public class RegisterRequestDto
     {
         public string UserName { get; set; }
