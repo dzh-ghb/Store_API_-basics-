@@ -1,10 +1,8 @@
 using System.Net;
-using Api.Common;
 using Api.Model;
 using Api.ModelDto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Api.Controllers
 {
@@ -38,8 +36,6 @@ namespace Api.Controllers
             }
 
             AppUser userFromDb = await Task.FromResult(storage.GetUser(registerRequestDto));
-            // dbContext.AppUsers
-            // .FirstOrDefaultAsync(u => u.UserName.ToLower() == registerRequestDto.UserName.ToLower());
 
             if (userFromDb != null)
             {
@@ -51,19 +47,8 @@ namespace Api.Controllers
                 });
             }
 
-            // AppUser newAppUser = new AppUser
-            // {
-            //     UserName = registerRequestDto.UserName,
-            //     Email = registerRequestDto.Email,
-            //     // NormalizedEmail = registerRequestDto.Email.ToUpper(),
-            //     FirstName = registerRequestDto.UserName
-            // };
-
             var isUserAdded = await Task.FromResult(storage.AddUser(registerRequestDto, userManager));
-            // // попытка создания юзера
-            // var result = await userManager.CreateAsync(newAppUser, registerRequestDto.Password);
 
-            // if (!result.Succeeded)
             if (await isUserAdded == false)
             {
                 return BadRequest(new ServerResponse
@@ -73,15 +58,6 @@ namespace Api.Controllers
                     ErrorMessages = { "Ошибка регистрации" }
                 });
             }
-
-            // // определение указанной роли
-            // var newRoleAppUser = registerRequestDto.Role.Equals(
-            //     SharedData.Roles.Admin, StringComparison.OrdinalIgnoreCase)
-            //     ? SharedData.Roles.Admin
-            //     : SharedData.Roles.Consumer;
-
-            // // попытка добавления юзера к роли
-            // await userManager.AddToRoleAsync(newAppUser, newRoleAppUser);
 
             return Ok(new ServerResponse
             {
