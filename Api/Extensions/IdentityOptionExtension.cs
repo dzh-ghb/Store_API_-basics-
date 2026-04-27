@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-// расширения для конфигурации требований к сложности паролей пользователей
+// расширение для конфигурации требований к сложности паролей пользователей
 namespace Api.Extension
 {
     public static class IdentityOptionExtension
