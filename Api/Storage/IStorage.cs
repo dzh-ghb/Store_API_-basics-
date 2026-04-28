@@ -19,7 +19,9 @@ public interface IStorage
     #region AuthInfrastructure
     Task<bool> AddUser(RegisterRequestDto registerRequestDto, UserManager<AppUser> userManager/*, RoleManager<IdentityRole> roleManager*/);
 
-    AppUser GetUser(RegisterRequestDto registerRequestDto);
+    AppUser GetUser(IRequestDto requestDto);
+
+    // AppUser GetLoginnedUser(LoginRequestDto loginRequestDto);
 
     #endregion
 }

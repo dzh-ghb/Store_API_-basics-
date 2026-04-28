@@ -126,12 +126,20 @@ public class PostgreSqlEfStorage : IStorage
         return true;
     }
 
-    public AppUser GetUser(RegisterRequestDto registerRequestDto)
+    // public AppUser GetRegisteredUser(RegisterRequestDto registerRequestDto)
+    public AppUser GetUser(IRequestDto requestDto)
     {
         return dbContext
-        .AppUsers
-        .FirstOrDefault(u => u.UserName.ToLower() == registerRequestDto.UserName.ToLower());
+            .AppUsers
+            .FirstOrDefault(u => u.UserName.ToLower() == requestDto.UserName.ToLower());
     }
+
+    // public AppUser GetLoginnedUser(LoginRequestDto loginRequestDto)
+    // {
+    //     return dbContext
+    //         .AppUsers
+    //         .FirstOrDefault(u => u.Email.ToLower() == loginRequestDto.Email.ToLower());
+    // }
 
     #endregion
 }
