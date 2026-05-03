@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGenCustomConfig(); // builder.Services.AddSwaggerGen();
 
 // настройка взаимодействия с DbContext (метод расширения)
 builder.Services.AddPostgreSqlDbContext(builder.Configuration);
